@@ -4,6 +4,9 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{float}
+\usepackage{geometry}
+
+\geometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
 
 \title{Uso de Algoritmos de Classificação para Predição de Novos Casos de Diabetes Mellitus}
 \author{Pedro Jorge de Souza Colombrino \\ Matheus Ferreira Amaral Madeira \\ Guilherme Vieira Rodrigues}
@@ -14,103 +17,124 @@
 \maketitle
 
 \begin{abstract}
-Este estudo apresenta a aplicação de algoritmos de aprendizagem
-Máquina, focada em RandomForestClassifier, para previsão de novos casos de diabetes em mulheres. O objetivo é demonstrar como treinar, avaliar e usar esses modelos para prever a variável dependente diabetes (dicotômica) com base em novas entradas de dados clínicos e demográficos. Usando verificação cruzada através do K-Fold, procuramos identificar os modelos mais eficazes e validar a sua aplicação prática em cenários reais de saúde pública.
+Este estudo apresenta a aplicação de algoritmos de aprendizado de máquina, com foco em \textit{RandomForestClassifier}, para a previsão de novos casos de diabetes em mulheres. O objetivo principal é demonstrar como treinar, avaliar e implementar esses modelos na predição de uma variável dependente dicotômica (\textit{diabético}) com base em dados clínicos e demográficos. Utilizando validação cruzada (\textit{K-Fold}), identificamos o modelo mais eficaz e avaliamos sua aplicabilidade em cenários reais de saúde pública.
 \end{abstract}
 
 \section{Introdução}
 
-A capacidade de prever novos casos de diabetes com base em dados clínicos é uma ferramenta poderosa para a saúde pública e a medicina personalizada. A diabetes é uma doença crónica associada a graves riscos de complicações e morte, sendo particularmente prevalente nas mulheres devido a fatores específicos como a diabetes gestacional e alterações hormonais. 
+A capacidade de prever novos casos de diabetes com base em dados clínicos é uma ferramenta valiosa para a saúde pública e medicina personalizada. Diabetes Mellitus é uma doença crônica associada a sérios riscos de complicações, sendo prevalente em mulheres devido a fatores como diabetes gestacional e alterações hormonais.
 
-À medida que a disponibilidade de dados clínicos continua a aumentar, os algoritmos de aprendizagem automática destacam-se pela sua capacidade de identificar padrões complexos e fazer previsões precisas. Este estudo explora a aplicação de algoritmos de classificação, com foco em \textit{RandomForestClassifier}, para prever novos casos de diabetes em mulheres com base em suas características clínicas e demográficas.
-
-O foco principal deste trabalho é demonstrar como modelos treinados e validados podem ser usados para prever a presença de diabetes em novas linhas de dados, fornecendo uma abordagem prática e aplicável à tomada de decisão clínica.
+Com a crescente disponibilidade de dados clínicos, algoritmos de aprendizado de máquina destacam-se pela capacidade de identificar padrões complexos e fazer previsões precisas. Este trabalho explora a aplicação do algoritmo \textit{RandomForestClassifier} para prever diabetes com base em características clínicas e demográficas, demonstrando como os modelos podem ser aplicados na prática clínica.
 
 \section{Metodologia}
 
 \subsection{Conjunto de Dados}
-O conjunto de dados utilizado foi do Kaggle e continha informações sobre 768 pacientes do sexo feminino. Cada registro é composto por 8 variáveis clínicas e demográficas e uma variável alvo (\textit{Diabetic}) que indica a presença ou ausência de diabetes.
+Os dados utilizados foram obtidos do Kaggle, com 768 registros de pacientes do sexo feminino, contendo 8 variáveis explicativas e uma variável alvo (\textit{Diabético}) que indica a presença ou ausência de diabetes.
 
 \begin{table}[H]
     \centering
-    \caption{Dicionário de Dados}
-    \begin{tabular}{|p{3cm}|p{7cm}|p{3cm}|}
+    \caption{Descrição das Variáveis do Conjunto de Dados}
+    \begin{tabular}{|p{3cm}|p{8cm}|p{3cm}|}
         \hline
-        \textbf{Variável} & \textbf{Descrição} & \textbf{Tipo de dado} \\
+        \textbf{Variável} & \textbf{Descrição} & \textbf{Tipo de Dado} \\
         \hline
-        Gravidez & Número de vezes que o paciente esteve grávido & int \\
+        Gravidez & Número de gestações do paciente & Inteiro \\
         \hline
-        Glicose & Concentração de glucose no plasma após um teste oral de tolerância à glucose de 2 horas & int \\
+        Glicose & Concentração de glicose no plasma após teste oral & Inteiro \\
         \hline
-        PressaoSanguinea & Pressão arterial diastólica (mm Hg) & int \\
+        PressaoSanguinea & Pressão arterial diastólica (mmHg) & Inteiro \\
         \hline
-        EspessuraDaPele & Dobra cutânea tricipital (mm) & int \\
+        EspessuraDaPele & Espessura da dobra cutânea tricipital (mm) & Inteiro \\
         \hline
-        Insulina & Insulina sérica de 2 horas (mu U/ml) & int \\
+        Insulina & Nível sérico de insulina de 2h (mu U/ml) & Inteiro \\
         \hline
-        IMC & Índice de massa corporal (peso em kg/(altura em m)^2) & float \\
+        IMC & Índice de Massa Corporal (peso em kg/(altura em m)$^2$) & Decimal \\
         \hline
-        DiabetesPedigree & Função que representa o pedigree da diabetes do paciente & float \\
+        DiabetesPedigree & Histórico genético de diabetes & Decimal \\
         \hline
-        Idade & Idade do paciente (anos) & int \\
+        Idade & Idade do paciente (anos) & Inteiro \\
         \hline
-        Diabetico & Resultado binário (0 ou 1) em que 1 indica a presença de diabetes & int \\
+        Diabético & Presença de diabetes (1: Sim, 0: Não) & Inteiro \\
         \hline
     \end{tabular}
 \end{table}
 
-\subsection{Algoritmo de Classificação: RandomForestClassifier}
-Neste trabalho, utilizamos \textit{RandomForestClassifier}, um modelo baseado em árvore de decisão que combina múltiplas árvores para gerar previsões robustas. Sua capacidade de lidar com variáveis complexas e detectar interações não lineares o torna ideal para resolver tais problemas.
+\subsection{Modelo: RandomForestClassifier}
+\textit{RandomForestClassifier} é uma abordagem baseada em árvore de decisão que usa um conjunto de árvores para melhorar a robustez e a precisão. É adequado para detectar interações não lineares entre variáveis.
 
-\subsection{Processo de Validação}
-A validação do modelo foi realizada utilizando a técnica de validação cruzada K-fold (5 vezes). Esta abordagem:
+\subsection{Validação Cruzada com K-Fold}
+\textit{K-Fold} A validação cruzada foi usada para avaliar o desempenho do modelo. O conjunto de dados foi dividido em 5 subconjuntos (\textit{folds}), garantindo que todos os dados fossem utilizados para treinamento e teste em diferentes iterações.
+
 \begin{itemize}
-    \item Garante que o modelo seja avaliado em relação a todos os dados disponíveis;
-    \item Reduz o risco de overfitting;
-    \item Fornece métricas de desempenho mais consistentes e confiáveis.
+    \item Reduz a possibilidade de \textit{overfitting}.
+    \item fornece métricas de desempenho mais confiáveis.
+    \item garante uma avaliação mais abrangente do modelo.
 \end{itemize}
 
-\subsection{Critério para Seleção do Melhor Modelo}
-Ao final do processo de validação cruzada, o modelo com maior precisão média em \textit{folds} é selecionado e salvo em disco usando a biblioteca \texttt{pickle}. O modelo é posteriormente usado para prever novas entradas de dados.
+\section{Treinamento e Avaliação}
 
-\section{Uso do Modelo Treinado para Predição de Novos Casos}
+\subsection{Hiperparâmetros do RandomForestClassifier}
+Os hiperparâmetros de \textit{RandomForestClassifier} controlam o comportamento e o desempenho do modelo. Aqui, adotamos uma configuração baseada em avaliação heurística, que é uma aproximação prática do problema real e é particularmente útil quando não há dados suficientes para uma busca exaustiva de hiperparâmetros.
 
-Depois de selecionar o melhor modelo, usamos o \textit{RandomForestClassifier} salvo para fazer previsões sobre novos dados. Este processo demonstra a aplicabilidade prática do modelo em cenários reais.
+\begin{itemize}
+    \item \textbf{Número de árvores (\texttt{n\_estimators}):} Define o número de árvores na floresta. Um número maior pode melhorar a estabilidade do modelo, mas por outro lado aumenta o custo computacional. A fórmula heurística utilizada é:
+    \begin{equation}
+    n\_estimators = 10 \times \sqrt{n},
+    \end{equation}
+    onde \( n \) é o número total de amostras. Este cálculo fornece um ponto de partida para um equilíbrio entre desempenho e eficiência computacional.
 
-\subsection{Exemplo de Aplicação}
+    \item \textbf{Profundidade Máxima (\texttt{max\_depht}):} Este hiperparâmetro controla a profundidade em que cada árvore pode crescer. Árvores mais profundas tendem a capturar mais detalhes, mas podem levar ao \textit{overfitting}. A profundidade é limitada pela seguinte fórmula:
+    \begin{equation}
+    max\_depth = \log_2(n),
+    \end{equation}
+    onde \( n \) é o número total de amostras. Isso permite capturar padrões importantes sem complicar demais o modelo.
 
-Considere os dados de um novo paciente:
+    \item \textbf{Número mínimo de amostras para divisão (\texttt{min\_samples\_split}):} Define o número mínimo de amostras necessárias para dividir um nó. Para evitar partições muito pequenas e garantir robustez usamos:
+    \begin{equation}
+    min\_samples\_split = \max(2, \frac{n}{100}),
+    \end{equation}
+    onde \( n \) é o número total de amostras.
 
-\begin{verbatim}
-    novo_paciente = [[5, 176, 72, 17, 24.6, 0.387, 34]]
-\end{verbatim}
+    \item \textbf{Amostras mínimas por folha (\texttt{min\_samples\_leaf}):} Determina o número mínimo de amostras permitido em uma folha terminal. A heurística utilizada é:
+    \begin{equation}
+    min\_samples\_leaf = \max(1, \frac{n}{1000}),
+    \end{equation}
+    garantindo que cada folha tenha um número mínimo de amostras para conclusões confiáveis.
 
-Os passos para realizar a previsão são:
-\begin{enumerate}
-    \item Carregar o modelo salvo utilizando a biblioteca \texttt{pickle}.
-    \item Passar os dados do novo paciente ao modelo para gerar a predição.
-    \item Interpretar o resultado: 1 (diabético) ou 0 (não diabético).
-\end{enumerate}
+    \item \textbf{Número máximo de atributos por Divisão (\texttt{max\_features}):} Define quantos atributos são considerados para encontrar a melhor partição. Para problemas de classificação, as escolhas comuns são:
+    \begin{equation}
+    max\_features = \sqrt{m},
+    \end{equation}
+    onde \( m \) é o número total de atributos no conjunto de dados.
+\end{itemize}
 
-\begin{verbatim}
-    # Carregar o modelo salvo
-    with open("melhor_modelo_random_forest.pkl", "rb") as f:
-        modelo = pickle.load(f)
+Essas heurísticas fornecem uma base sólida para configurar o modelo antes de realizar ajustes mais avançados, como otimização de hiperparâmetros via \textit{Grid Search} ou \textit{Random Search}. O uso destas avaliações iniciais é amplamente aceito na prática porque proporciona um equilíbrio entre simplicidade e desempenho.
 
-    # Prever o novo paciente
-    predicao = modelo.predict(novo_paciente)
-
-    # Resultado
-    resultado = "Diabético" if predicao[0] == 1 else "Não diabético"
-    print(f"Previsão: {resultado}")
-\end{verbatim}
+\subsection{Métricas de Avaliação}
+O desempenho foi avaliado com a métrica de \textit{acurácia}, calculada como:
+\[
+\text{Acurácia} = \frac{\text{Número de Previsões Corretas}}{\text{Número Total de Previsões}}
+\]
 
 \section{Resultados}
+Os resultados da validação cruzada mostraram uma precisão média de 85% nos dados de teste, destacando a eficiência do modelo na previsão de novos casos.
 
-Os resultados da validação cruzada mostram que \textit{RandomForestClassifier} tem uma precisão média de 85\% nos dados de teste, destacando sua eficiência na previsão de novas situações. O modelo demonstra robustez e consistência globais.
+\section{Aplicação Prática}
+
+Após treinar o modelo, use a biblioteca \texttt{pickle} para salvar o modelo e depois carregá-lo para prever novos casos. exemplo:
+\begin{verbatim}
+novo_paciente = [[5, 176, 72, 17, 24.6, 0.387, 34]]
+# Carregar o modelo salvo
+with open("melhor_modelo_random_forest.pkl", "rb") as f:
+    modelo = pickle.load(f)
+# Previsão
+predicao = modelo.predict(novo_paciente)
+\end{verbatim}
+
+O resultado indica se o paciente é diabético (\texttt{1}) ou não (\texttt{0}).
 
 \section{Conclusão}
 
-Este estudo demonstra a eficácia do uso de algoritmos de classificação (com ênfase em \textit{RandomForestClassifier}) para prever novos casos de diabetes em mulheres. As aplicações práticas do modelo, exemplificadas pelas previsões sobre novos dados, destacam o potencial destas ferramentas para apoiar a tomada de decisões clínicas e estratégias de saúde pública. Melhorias futuras incluem a adição de mais dados e o uso de técnicas de otimização de hiperparâmetros para melhorar ainda mais o desempenho do modelo.
+O uso de \textit{RandomForestClassifier} demonstrou ser eficaz na previsão de diabetes em mulheres. Melhorias futuras incluem aumentar o conjunto de dados e aplicar técnicas de otimização de hiperparâmetros.
 
 \end{document}

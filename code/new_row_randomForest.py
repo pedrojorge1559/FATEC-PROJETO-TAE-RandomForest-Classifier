@@ -12,3 +12,5 @@ predict = modelo.predict(new_row)
 
 resultado = "Diabético" if predict[0] == 1 else "Não Diabético"
 print(f"Predição da nova linha: {resultado}")
+
+##usar data.describe().T
