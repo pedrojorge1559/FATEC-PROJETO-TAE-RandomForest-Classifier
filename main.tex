@@ -70,6 +70,13 @@ Os dados utilizados foram obtidos do Kaggle, com 768 registros de pacientes do s
     \item fornece métricas de desempenho mais confiáveis.
     \item garante uma avaliação mais abrangente do modelo.
 \end{itemize}
+Para as features da ferramenta \textit{K-Fold}, utilizamos de ténicas heurísticas para uma aproximação prática, onde:
+\begin{equation}
+    n\_splits = \min(5, \lfloor \frac{n}{10} \rfloor)
+    \end{equation}
+\( n \) é o número total de amostras.
+\newline
+\newline Também utilizamos a feature \textit{Shuffle}, que aceita entradas booleanas, definido como \textit{True} e \textit{random\_state} definido em 42, garantindo uma grande representatividade dos dados e uma boa reprodutibilidade dos resultados.
 
 \section{Treinamento e Avaliação}
 
@@ -117,21 +124,42 @@ O desempenho foi avaliado com a métrica de \textit{acurácia}, calculada como:
 \]
 
 \section{Resultados}
-Os resultados da validação cruzada mostraram uma precisão média de 85% nos dados de teste, destacando a eficiência do modelo na previsão de novos casos.
+\singlespacing
+
+Os resultados da validação cruzada mostram que a precisão média por fold é a seguinte:
+
+\begin{itemize}
+    \item Precisão do modelo da 1ª fold: 0,74
+    \item Precisão do modelo da 2ª fold: 0,79
+    \item Precisão do modelo na 3ª fold: 0,79
+    \item Precisão do modelo de 4ª fold: 0,78
+    \item Precisão do modelo de 5ª fold: 0,74
+\end{itemize}
+
+A melhor precisão do modelo salvo foi de 0,79.
+Estes resultados demonstram que o modelo \textit{RandomForestClassifier} apresenta desempenho consistente e robusto com precisão média geral satisfatória. A validação cruzada confirmou a estabilidade do modelo, com 79\% de acurácia.
+
 
 \section{Aplicação Prática}
 
-Após treinar o modelo, use a biblioteca \texttt{pickle} para salvar o modelo e depois carregá-lo para prever novos casos. exemplo:
+Após treinar o modelo, use a biblioteca \texttt{pickle} para salvar o modelo e depois carregá-lo para prever novos casos. Aqui está um exemplo:
+
 \begin{verbatim}
-novo_paciente = [[5, 176, 72, 17, 24.6, 0.387, 34]]
+import pickle
+
+nova_linha = [[5, 176, 72, 17, 24.6, 0.387, 34]]
 # Carregar o modelo salvo
 with open("melhor_modelo_random_forest.pkl", "rb") as f:
     modelo = pickle.load(f)
 # Previsão
-predicao = modelo.predict(novo_paciente)
+predicao = modelo.predict(nova_linha)
 \end{verbatim}
 
 O resultado indica se o paciente é diabético (\texttt{1}) ou não (\texttt{0}).
+\vspace{1em}
+
+O uso da biblioteca \texttt{pickle} para salvar o modelo treinado permite que ele seja carregado em qualquer máquina sem a necessidade de reprocessar os dados ou reler o CSV original. Isso facilita a implementação do modelo em ambientes de produção, onde previsões precisam ser feitas rapidamente e com eficiência. Basta carregar o arquivo do modelo salvo e utilizá-lo para prever novos casos, garantindo que o processo seja ágil e sem a sobrecarga computacional de treinar o modelo novamente.
+
 
 \section{Conclusão}
 

@@ -6,15 +6,14 @@ from sklearn.metrics import accuracy_score
 import pickle
 import sys
 sys.path.append("D:/project_hub/Predição de Pacientes com Diabetes")
-from src.model_utils import save_model
+from utils.model_utils import save_model
 
-DATA_PATH = "D:/project_hub/Predição de Pacientes com Diabetes/input/diabetes_dataset.csv"
+DATA_PATH = "D:/project_hub/Predição de Pacientes com Diabetes/src/diabetes_input.csv"
 MODEL_PATH = "D:/project_hub/Predição de Pacientes com Diabetes/models/melhor_modelo_random_forest.pkl"
 SPLIT_SAVE_DIR = "D:/project_hub/Predição de Pacientes com Diabetes/splits/"
 
 data = pd.read_csv(DATA_PATH)
-x = np.array([data["Gravidez"], data["Glicose"], data["PressaoSanguinea"], data["EspessuraDaPele"],
-              data["IMC"], data["DiabetesPedigree"], data["Idade"]]).T
+x = np.array([data["Gravidez"], data["Glicose"], data["IMC"], data["DiabetesPedigree"], data["Idade"]]).T
 y = np.array(data["Diabetico"])
 
 #kfold features
