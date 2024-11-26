@@ -78,6 +78,14 @@ Para as features da ferramenta \textit{K-Fold}, utilizamos de ténicas heurísti
 \newline
 \newline Também utilizamos a feature \textit{Shuffle}, que aceita entradas booleanas, definido como \textit{True} e \textit{random\_state} definido em 42, garantindo uma grande representatividade dos dados e uma boa reprodutibilidade dos resultados.
 
+\subsection{Tratamento de Outliers com a Técnica IQR}
+
+Para assegurar a qualidade dos dados utilizados no treinamento do modelo, empregamos a técnica do \textit{Interquartile Range} (IQR) para a identificação e remoção de outliers. Essa técnica baseia-se na dispersão dos dados, calculando o intervalo entre o primeiro quartil (\( Q1 \)) e o terceiro quartil (\( Q3 \)), conhecido como IQR. Valores considerados outliers são aqueles que estão abaixo de \( Q1 - k \times IQR \) ou acima de \( Q3 + k \times IQR \), onde \( k \) é um fator ajustável (neste trabalho, utilizamos \( k = 0.9 \), ajustado empiricamente para o conjunto de dados).
+
+Ao aplicar essa técnica ao conjunto de dados, identificamos e removemos registros extremos, que representavam cerca de 100 ocorrências antes da filtragem. Após a remoção, apenas dois valores considerados atípicos persistiram, ambos na variável ``Idade''. Essa redução significativa reforça a eficácia do IQR em criar um conjunto de dados mais limpo e adequado para modelagem.
+
+Os dados finais, sem outliers, foram armazenados no arquivo \texttt{diabetes\_input.csv}, que serviu como entrada para o modelo.
+
 \section{Treinamento e Avaliação}
 
 \subsection{Hiperparâmetros do RandomForestClassifier}
@@ -130,9 +138,9 @@ Os resultados da validação cruzada mostram que a precisão média por fold é 
 
 \begin{itemize}
     \item Precisão do modelo da 1ª fold: 0,74
-    \item Precisão do modelo da 2ª fold: 0,79
-    \item Precisão do modelo na 3ª fold: 0,79
-    \item Precisão do modelo de 4ª fold: 0,78
+    \item Precisão do modelo da 2ª fold: 0,74
+    \item Precisão do modelo na 3ª fold: 0,78
+    \item Precisão do modelo de 4ª fold: 0,79
     \item Precisão do modelo de 5ª fold: 0,74
 \end{itemize}
 
@@ -163,6 +171,12 @@ O uso da biblioteca \texttt{pickle} para salvar o modelo treinado permite que el
 
 \section{Conclusão}
 
-O uso de \textit{RandomForestClassifier} demonstrou ser eficaz na previsão de diabetes em mulheres. Melhorias futuras incluem aumentar o conjunto de dados e aplicar técnicas de otimização de hiperparâmetros.
+O \textit{RandomForestClassifier} provou ser uma ferramenta poderosa para classificação, devido à sua robustez e capacidade de manejar dados complexos com múltiplas variáveis explicativas. Sua abordagem baseada em múltiplas árvores decisórias permite capturar interações não lineares entre os atributos, tornando-o uma escolha ideal para problemas de classificação com estruturas de dados variadas.
+
+Neste trabalho, o \textit{RandomForestClassifier} demonstrou eficiência ao alcançar uma acurácia média consistente durante a validação cruzada, evidenciando sua estabilidade e aplicabilidade em contextos reais. A capacidade de ajustar hiperparâmetros como o número de árvores (\texttt{n\_estimators}) e a profundidade máxima das árvores (\texttt{max\_depth}) permite ao modelo um alto grau de personalização para diferentes conjuntos de dados, sem perder sua característica de generalização.
+
+Embora o conjunto de dados de diabetes tenha servido como um estudo de caso, a flexibilidade do \textit{RandomForestClassifier} torna-o aplicável a diversos domínios, como detecção de fraudes, análise de crédito e diagnósticos médicos, entre outros. Seu desempenho robusto, aliado à facilidade de implementação e ao suporte nativo para salvar modelos com bibliotecas como \texttt{pickle}, faz dele uma solução prática para aplicações em produção.
+
+Futuras extensões deste trabalho podem incluir o uso de técnicas avançadas de otimização de hiperparâmetros, como \textit{Grid Search} e \textit{Bayesian Optimization}, e a comparação com outros algoritmos baseados em árvores, como \textit{Gradient Boosting} e \textit{XGBoost}, para aprofundar a análise de desempenho. Dessa forma, este estudo reforça a importância do \textit{RandomForestClassifier} como uma ferramenta versátil e eficaz em projetos de aprendizado de máquina voltados à classificação.
 
 \end{document}
